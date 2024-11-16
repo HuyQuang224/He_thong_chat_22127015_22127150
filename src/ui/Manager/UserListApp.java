@@ -119,7 +119,7 @@ public class UserListApp extends JPanel {
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("User Management");
+        JFrame frame = new JFrame("User List");
         UserListApp userPanel = new UserListApp();
         frame.add(userPanel);
         frame.setSize(800, 600);
