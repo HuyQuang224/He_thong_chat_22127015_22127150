@@ -133,7 +133,7 @@ public class NewUserUI extends JFrame {
             // Lấy danh sách người dùng từ DAO
             List<UserAccount> allUsers = userDAO.getAllUsers();
 
-            // Lọc người dùng mới đăng ký trong vòng 1 năm
+            // Lọc người dùng mới đăng ký trong vòng 10 năm
             List<UserAccount> newUsers = filterNewUsers(allUsers);
 
             // Xóa dữ liệu cũ
@@ -172,7 +172,7 @@ public class NewUserUI extends JFrame {
     private List<UserAccount> filterNewUsers(List<UserAccount> allUsers) {
         List<UserAccount> newUsers = new ArrayList<>();
         Date currentDate = new Date();
-        long oneYearMillis = 365L * 24 * 60 * 60 * 1000; // 1 năm = 365 ngày
+        long oneYearMillis = 365L * 24 * 60 * 60 * 1000 * 10; 
 
         for (UserAccount user : allUsers) {
             Date createdAt = user.getCreatedAt();
