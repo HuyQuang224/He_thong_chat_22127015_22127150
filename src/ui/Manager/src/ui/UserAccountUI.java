@@ -101,21 +101,50 @@ public class UserAccountUI extends JPanel {
         JPanel filterPanel = new JPanel();
         controlPanel.add(filterPanel);
         filterPanel.add(new JLabel("Filter by: "));
-        JComboBox<String> filterComboBox = new JComboBox<>(new String[] {"All", "Online", "Banned"});
+        // Thêm vào phần filterPanel trong initialize()
+        JComboBox<String> filterComboBox = new JComboBox<>(new String[] {"Username", "Fullname", "Status"});
         filterPanel.add(filterComboBox);
+
+        JTextField filterTextField = new JTextField(15);
+        filterPanel.add(filterTextField);
+
         JButton filterButton = new JButton("Filter");
         filterButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    String filterCriteria = (String) filterComboBox.getSelectedItem();
-                    List<UserAccount> filteredUsers = userAccountDAO.filterUsers(filterCriteria);
-                    updateUserTable(filteredUsers);
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(frame, "Error filtering users.");
+                String selectedCriteria = (String) filterComboBox.getSelectedItem();
+                String filterText = filterTextField.getText().trim();
+
+                if (filterText.isEmpty()) {
+                    // Reset filter nếu không có văn bản
+                    TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
+                    userTable.setRowSorter(sorter);
+                    sorter.setRowFilter(null);
+                    return;
+                }
+
+                int columnIndex = -1;
+                if ("Username".equals(selectedCriteria)) {
+                    columnIndex = 1; // Cột Username
+                } else if ("Fullname".equals(selectedCriteria)) {
+                    columnIndex = 3; // Cột Fullname
+                } else if ("Status".equals(selectedCriteria)) {
+                    columnIndex = 8; // Cột Online
+                }
+
+                if (columnIndex != -1) {
+                    TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
+                    userTable.setRowSorter(sorter);
+
+                    // Áp dụng RowFilter
+                    sorter.setRowFilter(RowFilter.regexFilter("(?i)" + filterText, columnIndex));
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Invalid filter criteria selected.");
                 }
             }
         });
         filterPanel.add(filterButton);
+
     
         // Thêm nút Ban/Unban
         JPanel banPanel = new JPanel();
